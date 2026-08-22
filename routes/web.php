@@ -15,6 +15,13 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
+// Temporary health check — bypasses DB to isolate startup errors
+Route::get('/health', fn () => response()->json([
+    'status' => 'ok',
+    'php'    => PHP_VERSION,
+    'env'    => app()->environment(),
+]));
+
 Route::get('/poems', [PoemController::class, 'index'])->name('poems.index');
 Route::get('/poems/{poem:slug}', [PoemController::class, 'show'])->name('poems.show');
 
