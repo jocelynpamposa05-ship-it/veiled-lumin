@@ -31,19 +31,24 @@ COPY . .
 COPY --from=frontend /app/public/build ./public/build
 
 # Install PHP dependencies (no dev)
-# --ignore-platform-reqs lets composer install even if the platform
-# reports a slightly different PHP patch version than the lock file expects
 RUN composer install --no-dev --optimize-autoloader --ignore-platform-reqs
 
-# Ensure storage directories exist
+# Ensure storage directories exist and are writable
 RUN mkdir -p storage/framework/{sessions,views,cache} \
     && mkdir -p storage/logs \
-    && mkdir -p storage/app/public
+    && mkdir -p storage/app/public \
+    && chmod -R 775 storage bootstrap/cache
 
 EXPOSE 10000
 
-CMD php artisan config:cache \
-    && php artisan route:cache \
-    && php artisan view:cache \
-    && php artisan storage:link \
+# Use a shell script as entrypoint so each step is visible in logs
+CMD echo "=== Starting Veiled Lumin ===" \
+    && echo "PHP: $(php --version | head -1)" \
+    && echo "=== Clearing caches ===" \
+    && php artisan config:clear \
+    && php artisan route:clear \
+    && php artisan view:clear \
+    && echo "=== Storage link ===" \
+    && php artisan storage:link --force \
+    && echo "=== Starting server on port ${PORT:-10000} ===" \
     && php artisan serve --host=0.0.0.0 --port=${PORT:-10000}
