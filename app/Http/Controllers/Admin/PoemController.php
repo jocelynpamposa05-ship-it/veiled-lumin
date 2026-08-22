@@ -5,12 +5,14 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Genre;
 use App\Models\Poem;
+use App\Services\CloudinaryService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 
 class PoemController extends Controller
 {
+    public function __construct(private CloudinaryService $cloudinary) {}
+
     public function index()
     {
         $poems = Poem::with('genre')->latest()->paginate(15);
@@ -30,8 +32,10 @@ class PoemController extends Controller
         $validated = $this->validated($request);
 
         if ($request->hasFile('cover_image')) {
-            $validated['cover_image'] = $request->file('cover_image')
-                ->store('covers', 'public');
+            $uploaded = $this->cloudinary->upload($request->file('cover_image'), 'veiled-lumin/covers');
+            // Store the public_id — lets us delete/transform later
+            $validated['cover_image']     = $uploaded['public_id'];
+            $validated['cover_image_url'] = $uploaded['url'];
         }
 
         Poem::create($validated);
@@ -51,16 +55,18 @@ class PoemController extends Controller
         $validated = $this->validated($request, $poem);
 
         if ($request->hasFile('cover_image')) {
-            // Remove the old image before storing the new one
-            $poem->deleteCoverImage();
-            $validated['cover_image'] = $request->file('cover_image')
-                ->store('covers', 'public');
+            // Delete the old Cloudinary image first
+            $poem->deleteCoverImage($this->cloudinary);
+
+            $uploaded = $this->cloudinary->upload($request->file('cover_image'), 'veiled-lumin/covers');
+            $validated['cover_image']     = $uploaded['public_id'];
+            $validated['cover_image_url'] = $uploaded['url'];
         }
 
-        // Allow the admin to explicitly remove the cover without uploading a new one
         if ($request->boolean('remove_cover')) {
-            $poem->deleteCoverImage();
-            $validated['cover_image'] = null;
+            $poem->deleteCoverImage($this->cloudinary);
+            $validated['cover_image']     = null;
+            $validated['cover_image_url'] = null;
         }
 
         $poem->update($validated);
@@ -70,7 +76,7 @@ class PoemController extends Controller
 
     public function destroy(Poem $poem)
     {
-        $poem->deleteCoverImage();
+        $poem->deleteCoverImage($this->cloudinary);
         $poem->delete();
 
         return redirect()->route('admin.poems.index')->with('status', 'Poem deleted.');

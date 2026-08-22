@@ -13,10 +13,10 @@ RUN npm run build
 # ─── Stage 2: PHP application ───────────────────────────────────────────────
 FROM php:8.3-cli
 
-# System dependencies
+# System dependencies + PHP extensions
 RUN apt-get update && apt-get install -y \
-    git unzip libzip-dev libsqlite3-dev \
-    && docker-php-ext-install pdo pdo_sqlite zip \
+    git unzip libzip-dev libpq-dev \
+    && docker-php-ext-install pdo pdo_pgsql pgsql zip \
     && rm -rf /var/lib/apt/lists/*
 
 # Composer
@@ -36,11 +36,10 @@ RUN composer install --no-dev --optimize-autoloader
 # Ensure storage directories exist
 RUN mkdir -p storage/framework/{sessions,views,cache} \
     && mkdir -p storage/logs \
-    && mkdir -p storage/app/public/covers
+    && mkdir -p storage/app/public
 
 EXPOSE 10000
 
-# Start the server — migrations run via Render's Pre-Deploy Command
 CMD php artisan config:cache \
     && php artisan route:cache \
     && php artisan view:cache \

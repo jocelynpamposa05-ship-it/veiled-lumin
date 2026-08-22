@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
+use App\Services\CloudinaryService;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class Poem extends Model
@@ -17,7 +17,8 @@ class Poem extends Model
         'slug',
         'body',
         'excerpt',
-        'cover_image',
+        'cover_image',      // Cloudinary public_id
+        'cover_image_url',  // Cloudinary secure_url (stored so we never need to re-query)
         'genre_id',
         'status',
         'featured',
@@ -29,10 +30,6 @@ class Poem extends Model
         'featured'     => 'boolean',
     ];
 
-    /**
-     * Auto-generate slug from title whenever title is set,
-     * unless a slug was explicitly provided.
-     */
     public static function booted(): void
     {
         static::saving(function (Poem $poem) {
@@ -40,7 +37,6 @@ class Poem extends Model
                 $poem->slug = Str::slug($poem->title);
             }
 
-            // When a poem is marked published and has no timestamp yet, stamp it now.
             if ($poem->status === 'published' && empty($poem->published_at)) {
                 $poem->published_at = now();
             }
@@ -59,22 +55,32 @@ class Poem extends Model
     }
 
     /**
-     * Full public URL for the cover image, or null if none is set.
+     * Returns the cover image URL.
+     * Uses the stored secure_url — no extra API call needed.
      */
     public function getCoverUrlAttribute(): ?string
     {
-        return $this->cover_image
-            ? Storage::disk('public')->url($this->cover_image)
-            : null;
+        // Prefer the stored Cloudinary URL
+        if ($this->cover_image_url) {
+            return $this->cover_image_url;
+        }
+
+        // Fallback: old local storage path (for existing poems before migration)
+        if ($this->cover_image && ! str_contains($this->cover_image, '/')) {
+            return null; // public_id without URL stored yet — skip
+        }
+
+        return null;
     }
 
     /**
-     * Delete the stored cover image file from disk.
+     * Delete the Cloudinary image for this poem.
+     * Pass the CloudinaryService instance from the controller.
      */
-    public function deleteCoverImage(): void
+    public function deleteCoverImage(CloudinaryService $cloudinary): void
     {
         if ($this->cover_image) {
-            Storage::disk('public')->delete($this->cover_image);
+            $cloudinary->delete($this->cover_image);
         }
     }
 }
