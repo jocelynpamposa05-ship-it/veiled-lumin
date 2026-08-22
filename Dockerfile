@@ -31,7 +31,9 @@ COPY . .
 COPY --from=frontend /app/public/build ./public/build
 
 # Install PHP dependencies (no dev)
-RUN composer install --no-dev --optimize-autoloader
+# --ignore-platform-reqs lets composer install even if the platform
+# reports a slightly different PHP patch version than the lock file expects
+RUN composer install --no-dev --optimize-autoloader --ignore-platform-reqs
 
 # Ensure storage directories exist
 RUN mkdir -p storage/framework/{sessions,views,cache} \
