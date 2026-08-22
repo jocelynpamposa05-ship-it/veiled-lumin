@@ -33,23 +33,16 @@ COPY --from=frontend /app/public/build ./public/build
 # Install PHP dependencies (no dev)
 RUN composer install --no-dev --optimize-autoloader
 
-# Ensure the SQLite database file and storage directories exist
-RUN mkdir -p /var/data \
-    && touch /var/data/database.sqlite \
-    && mkdir -p storage/framework/{sessions,views,cache} \
+# Ensure storage directories exist
+RUN mkdir -p storage/framework/{sessions,views,cache} \
     && mkdir -p storage/logs \
     && mkdir -p storage/app/public/covers
 
-# Set correct permissions
-RUN chown -R www-data:www-data storage bootstrap/cache \
-    || true
-
 EXPOSE 10000
 
-# On startup: run migrations, link storage, then serve
+# Start the server — migrations run via Render's Pre-Deploy Command
 CMD php artisan config:cache \
     && php artisan route:cache \
     && php artisan view:cache \
-    && php artisan migrate --force \
     && php artisan storage:link \
     && php artisan serve --host=0.0.0.0 --port=${PORT:-10000}
