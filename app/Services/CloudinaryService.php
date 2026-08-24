@@ -2,48 +2,36 @@
 
 namespace App\Services;
 
-use Cloudinary\Cloudinary;
-use Cloudinary\Configuration\Configuration;
+use Cloudinary;
+use Cloudinary\Uploader;
 use Illuminate\Http\UploadedFile;
 
 class CloudinaryService
 {
-    private Cloudinary $cloudinary;
-
     public function __construct()
     {
-        Configuration::instance([
-            'cloud' => [
-                'cloud_name' => config('services.cloudinary.cloud_name'),
-                'api_key'    => config('services.cloudinary.api_key'),
-                'api_secret' => config('services.cloudinary.api_secret'),
-            ],
-            'url' => [
-                'secure' => true,
-            ],
+        // v1 static config
+        Cloudinary::config([
+            'cloud_name' => config('services.cloudinary.cloud_name'),
+            'api_key'    => config('services.cloudinary.api_key'),
+            'api_secret' => config('services.cloudinary.api_secret'),
+            'secure'     => true,
         ]);
-
-        $this->cloudinary = new Cloudinary();
     }
 
     /**
      * Upload an image file to Cloudinary.
-     * Returns the public_id (used to reference / delete later).
+     * Returns public_id and secure_url.
      */
     public function upload(UploadedFile $file, string $folder = 'covers'): array
     {
-        $result = $this->cloudinary->uploadApi()->upload(
-            $file->getRealPath(),
-            [
-                'folder'           => $folder,
-                'resource_type'    => 'image',
-                'allowed_formats'  => ['jpg', 'jpeg', 'png', 'webp'],
-                'transformation'   => [
-                    'quality' => 'auto',
-                    'fetch_format' => 'auto',
-                ],
-            ]
-        );
+        $result = Uploader::upload($file->getRealPath(), [
+            'folder'          => $folder,
+            'resource_type'   => 'image',
+            'allowed_formats' => ['jpg', 'jpeg', 'png', 'webp'],
+            'quality'         => 'auto',
+            'fetch_format'    => 'auto',
+        ]);
 
         return [
             'public_id' => $result['public_id'],
@@ -57,7 +45,7 @@ class CloudinaryService
     public function delete(string $publicId): void
     {
         try {
-            $this->cloudinary->uploadApi()->destroy($publicId);
+            Uploader::destroy($publicId);
         } catch (\Throwable) {
             // Silently ignore — image may already be gone
         }
@@ -68,6 +56,6 @@ class CloudinaryService
      */
     public function url(string $publicId): string
     {
-        return $this->cloudinary->image($publicId)->toUrl();
+        return cloudinary_url($publicId, ['secure' => true]);
     }
 }
