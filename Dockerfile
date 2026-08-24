@@ -1,10 +1,14 @@
 # ─── Stage 1: Build frontend assets ────────────────────────────────────────
 FROM node:20-slim AS frontend
 
+# Cache bust arg — increment to force fresh npm build
+ARG CACHE_BUST=2
+RUN echo "Cache bust: $CACHE_BUST"
+
 WORKDIR /app
 
 COPY package*.json ./
-RUN npm ci
+RUN npm ci --prefer-offline=false
 
 COPY . .
 RUN npm run build
