@@ -48,6 +48,10 @@ CMD echo "=== Starting Veiled Lumin ===" \
     && php artisan config:clear \
     && php artisan route:clear \
     && php artisan view:clear \
+    && echo "=== Running migrations ===" \
+    && php artisan migrate --force \
+    && echo "=== Seeding admin user ===" \
+    && php artisan db:seed --class=AdminUserSeeder --force \
     && echo "=== Storage link ===" \
     && php artisan storage:link --force \
     && echo "=== Starting server on port ${PORT:-10000} ===" \
