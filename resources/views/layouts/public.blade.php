@@ -52,36 +52,79 @@
                 @endforeach
             </nav>
 
-            {{-- Mobile hamburger (Alpine) --}}
-            <button class="sm:hidden text-lavender-grey hover:text-parchment transition"
-                    x-data
-                    @click="$dispatch('toggle-mobile-nav')"
-                    aria-label="Toggle menu">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
-                </svg>
-            </button>
-        </div>
+            {{-- Mobile nav — self-contained Alpine dropdown --}}
+            <div class="sm:hidden relative" x-data="{ open: false }" @keydown.escape.window="open = false">
 
-        {{-- Mobile nav drawer --}}
-        <div x-data="{ open: false }"
-             @toggle-mobile-nav.window="open = !open"
-             x-show="open"
-             x-transition:enter="transition duration-150"
-             x-transition:enter-start="opacity-0 -translate-y-1"
-             x-transition:enter-end="opacity-100 translate-y-0"
-             x-transition:leave="transition duration-100"
-             x-transition:leave-start="opacity-100"
-             x-transition:leave-end="opacity-0"
-             class="sm:hidden border-t border-white/8 bg-ink/95 backdrop-blur-md px-6 py-4 space-y-1">
-            @foreach($navItems as [$label, $href, $pattern])
-                @php $active = request()->routeIs($pattern); @endphp
-                <a href="{{ $href }}"
-                   class="block py-2 text-sm {{ $active ? 'text-parchment' : 'text-lavender-grey' }}">
-                    {{ $label }}
-                    @if($active)<span class="ml-1.5 text-amber-glow">·</span>@endif
-                </a>
-            @endforeach
+                {{-- Hamburger button --}}
+                <button @click="open = !open"
+                        :aria-expanded="open"
+                        aria-label="Toggle navigation menu"
+                        class="flex items-center justify-center w-9 h-9 rounded-lg
+                               border transition duration-150
+                               text-lavender-grey
+                               hover:text-parchment hover:border-white/20
+                               active:scale-95"
+                        style="border-color: rgba(255,255,255,0.1); background: rgba(255,255,255,0.04);">
+                    {{-- Hamburger → X toggle --}}
+                    <svg x-show="!open" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                    <svg x-show="open" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+
+                {{-- Dropdown menu — anchored to the right of the button --}}
+                <div x-show="open"
+                     x-transition:enter="transition ease-out duration-150"
+                     x-transition:enter-start="opacity-0 scale-95 -translate-y-1"
+                     x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+                     x-transition:leave="transition ease-in duration-100"
+                     x-transition:leave-start="opacity-100 scale-100 translate-y-0"
+                     x-transition:leave-end="opacity-0 scale-95 -translate-y-1"
+                     @click.outside="open = false"
+                     class="absolute right-0 mt-2 w-44 rounded-xl overflow-hidden z-50"
+                     style="
+                        background: rgba(20,22,31,0.97);
+                        border: 1px solid rgba(255,255,255,0.1);
+                        box-shadow: 0 16px 40px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.04);
+                        top: calc(100% + 8px);
+                     ">
+
+                    {{-- Menu items --}}
+                    @php
+                        $mobileItems = [
+                            ['Home',   route('home'),          'home'],
+                            ['Poems',  route('poems.index'),   'poems.*'],
+                            ['Genres', route('genres.index'),  'genres.*'],
+                            ['About',  route('about'),         'about'],
+                        ];
+                    @endphp
+
+                    <nav class="py-1.5" aria-label="Mobile navigation">
+                        @foreach($mobileItems as [$label, $href, $pattern])
+                            @php $active = request()->routeIs($pattern); @endphp
+                            <a href="{{ $href }}"
+                               @click="open = false"
+                               class="flex items-center gap-3 px-4 py-3 text-sm transition duration-150
+                                      {{ $active
+                                          ? 'text-amber-glow bg-white/[0.06]'
+                                          : 'text-lavender-grey hover:text-parchment hover:bg-white/[0.05]' }}">
+                                {{-- Active indicator dot --}}
+                                <span class="w-1 h-1 rounded-full flex-shrink-0 {{ $active ? 'bg-amber-glow' : 'bg-transparent' }}"></span>
+                                {{ $label }}
+                            </a>
+                        @endforeach
+                    </nav>
+
+                    {{-- Decorative footer inside dropdown --}}
+                    <div class="px-4 py-2.5 border-t" style="border-color: rgba(255,255,255,0.07);">
+                        <p class="text-[10px] font-serif italic" style="color: rgba(154,159,179,0.4);">
+                            Veiled Lumin
+                        </p>
+                    </div>
+                </div>
+            </div>
         </div>
     </header>
 
