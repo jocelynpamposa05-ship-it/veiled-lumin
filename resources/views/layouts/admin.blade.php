@@ -37,7 +37,7 @@
     ──────────────────────────────────────────────────────────────────────── --}}
     <aside class="fixed inset-y-0 left-0 z-40 w-64 bg-ink flex flex-col
                   transition-transform duration-200 ease-in-out
-                  md:relative md:translate-x-0 md:w-56 md:flex-shrink-0"
+                  md:static md:inset-auto md:z-auto md:translate-x-0 md:w-56 md:flex-shrink-0"
            :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'">
 
         {{-- Wordmark --}}
