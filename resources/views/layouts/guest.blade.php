@@ -12,7 +12,7 @@
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
-        <link rel="stylesheet" href="/build/assets/app-CS3g80mm.css">
+        <link rel="stylesheet" href="/build/assets/app-C20ZLflv.css">
         <script type="module" src="/build/assets/app-_swCgE72.js"></script>
     </head>
     <body class="font-sans text-parchment antialiased bg-ink min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0">

@@ -127,6 +127,83 @@
                text-stone-700 hover:bg-stone-50 transition duration-150;
     }
 
+    /* ─── Admin two-column layout ────────────────────────────────────────── */
+
+    /* Root shell — full viewport, flex row, no scroll on the shell itself */
+    .admin-layout {
+        display: flex;
+        width: 100%;
+        height: 100vh;
+        overflow: hidden;
+    }
+
+    /* Sidebar — in-flow flex child on desktop, off-canvas on mobile */
+    .admin-sidebar {
+        /* always present in the flex row */
+        display: flex;
+        flex-direction: column;
+        flex-shrink: 0;
+        width: 270px;
+        height: 100vh;
+        overflow: hidden;
+        background: #1c2033;
+        /* mobile: slides off-screen to the left */
+        position: fixed;
+        inset-block: 0;
+        left: 0;
+        z-index: 40;
+        transform: translateX(-100%);
+        transition: transform 200ms ease;
+    }
+
+    /* Desktop: sidebar rejoins the normal flow */
+    @media (min-width: 1024px) {
+        .admin-sidebar {
+            position: relative;   /* back in document flow */
+            inset: auto;          /* cancel the mobile inset */
+            transform: none;      /* cancel the translate */
+            z-index: auto;
+        }
+    }
+
+    /* When Alpine sets open=true on mobile */
+    .admin-sidebar.sidebar-open {
+        transform: translateX(0);
+    }
+
+    /* Body — everything to the right of the sidebar */
+    .admin-body {
+        flex: 1;
+        min-width: 0;          /* prevent flex blowout */
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+
+    /* Header — fixed height, never scrolls */
+    .admin-header {
+        flex-shrink: 0;
+        height: 52px;
+        background: #ffffff;
+        border-bottom: 1px solid #e7e5e4;
+        display: flex;
+        align-items: center;
+        padding: 0 1.5rem;
+        gap: 0.75rem;
+    }
+
+    /* Content — scrollable region */
+    .admin-content {
+        flex: 1;
+        overflow-y: auto;
+        background: #f0ebe0;
+        padding: 2rem;
+    }
+
+    @media (max-width: 640px) {
+        .admin-content { padding: 1rem; }
+    }
+
     /* ─── Divider ornament ───────────────────────────────────────────────── */
     .divider-ornament {
         @apply flex items-center gap-4;
