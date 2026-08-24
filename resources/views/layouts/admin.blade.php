@@ -16,7 +16,7 @@
       x-data="{ sidebarOpen: false }"
       @keydown.escape.window="sidebarOpen = false">
 
-{{-- ── Mobile backdrop overlay ──────────────────────────────────────────── --}}
+{{-- ── Backdrop overlay (all screen sizes) ─────────────────────────────── --}}
 <div x-show="sidebarOpen"
      x-transition:enter="transition-opacity duration-200"
      x-transition:enter-start="opacity-0"
@@ -25,20 +25,16 @@
      x-transition:leave-start="opacity-100"
      x-transition:leave-end="opacity-0"
      @click="sidebarOpen = false"
-     class="fixed inset-0 z-30 bg-black/60 md:hidden"
+     class="fixed inset-0 z-30 bg-black/60"
      style="display:none;">
 </div>
 
 <div class="flex min-h-screen">
 
-    {{-- ── Sidebar ───────────────────────────────────────────────────────────
-         Desktop: always visible at w-56
-         Mobile: off-canvas drawer, slides in from left
-    ──────────────────────────────────────────────────────────────────────── --}}
+    {{-- ── Sidebar — always off-canvas drawer ──────────────────────────────── --}}
     <aside class="fixed inset-y-0 left-0 z-40 w-64 bg-ink flex flex-col
-                  transition-transform duration-200 ease-in-out
-                  md:static md:inset-auto md:z-auto md:translate-x-0 md:w-56 md:flex-shrink-0"
-           :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'">
+                  transition-transform duration-200 ease-in-out"
+           :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'">
 
         {{-- Wordmark --}}
         <div class="px-6 py-5 border-b border-white/10 flex items-center justify-between flex-shrink-0">
@@ -50,16 +46,6 @@
                 <div class="text-[10px] mt-0.5 font-sans uppercase tracking-widest"
                      style="color:rgba(154,159,179,0.5);">Admin</div>
             </div>
-            {{-- Close button — mobile only --}}
-            <button @click="sidebarOpen = false"
-                    class="md:hidden flex items-center justify-center w-7 h-7 rounded-md
-                           transition duration-150"
-                    style="color:rgba(154,159,179,0.6);"
-                    aria-label="Close menu">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
-                </svg>
-            </button>
         </div>
 
         {{-- Nav --}}
@@ -111,16 +97,16 @@
         <header class="sticky top-0 z-20 bg-white border-b border-stone-200
                        px-4 sm:px-6 md:px-8 py-3 flex items-center gap-3">
 
-            {{-- Hamburger / X toggle — mobile only --}}
+            {{-- Hamburger / X toggle — always visible --}}
             <button @click="sidebarOpen = !sidebarOpen"
                     :aria-label="sidebarOpen ? 'Close navigation' : 'Open navigation'"
                     :aria-expanded="sidebarOpen"
-                    class="md:hidden flex items-center justify-center w-9 h-9 rounded-lg
+                    class="flex items-center justify-center w-9 h-9 rounded-lg
                            border border-stone-200 text-stone-500
                            hover:border-stone-300 hover:text-stone-700
                            active:scale-95 transition duration-150 flex-shrink-0">
 
-                {{-- Hamburger — shown when sidebar is closed --}}
+                {{-- Hamburger --}}
                 <svg x-show="!sidebarOpen"
                      x-transition:enter="transition ease-out duration-150"
                      x-transition:enter-start="opacity-0 rotate-90"
@@ -129,7 +115,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
                 </svg>
 
-                {{-- X — shown when sidebar is open --}}
+                {{-- X --}}
                 <svg x-show="sidebarOpen"
                      x-transition:enter="transition ease-out duration-150"
                      x-transition:enter-start="opacity-0 -rotate-90"
