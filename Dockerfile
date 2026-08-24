@@ -1,20 +1,4 @@
-# ─── Stage 1: Build frontend assets ────────────────────────────────────────
-FROM node:20-slim AS frontend
-
-# Cache bust arg — increment to force fresh npm build
-ARG CACHE_BUST=2
-RUN echo "Cache bust: $CACHE_BUST"
-
-WORKDIR /app
-
-COPY package*.json ./
-RUN npm ci --prefer-offline=false
-
-COPY . .
-RUN npm run build
-
-
-# ─── Stage 2: PHP application ───────────────────────────────────────────────
+# ─── PHP application ────────────────────────────────────────────────────────
 FROM php:8.4-cli
 
 # System dependencies + PHP extensions
@@ -28,16 +12,13 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 WORKDIR /app
 
-# Copy app source
+# Copy entire project (including pre-built public/build)
 COPY . .
 
-# Copy compiled frontend assets from stage 1
-COPY --from=frontend /app/public/build ./public/build
-
-# Install PHP dependencies (no dev)
+# Install PHP dependencies
 RUN composer install --no-dev --optimize-autoloader --ignore-platform-reqs
 
-# Ensure ALL writable directories exist with correct permissions
+# Ensure storage directories exist and are writable
 RUN mkdir -p storage/framework/sessions \
     && mkdir -p storage/framework/views \
     && mkdir -p storage/framework/cache/data \
@@ -48,7 +29,6 @@ RUN mkdir -p storage/framework/sessions \
 
 EXPOSE 10000
 
-# Write a startup script so each step is isolated and failures are visible
 RUN echo '#!/bin/sh\n\
 set -e\n\
 echo "=== PHP version ==="\n\
