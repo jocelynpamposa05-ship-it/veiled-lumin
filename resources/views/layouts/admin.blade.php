@@ -16,9 +16,7 @@
       x-data="{ sidebarOpen: false }"
       @keydown.escape.window="sidebarOpen = false">
 
-{{-- ════════════════════════════════════════════════════════════
-     MOBILE: overlay backdrop
-════════════════════════════════════════════════════════════ --}}
+{{-- ── Mobile backdrop overlay ──────────────────────────────────────────── --}}
 <div x-show="sidebarOpen"
      x-transition:enter="transition-opacity duration-200"
      x-transition:enter-start="opacity-0"
@@ -33,28 +31,30 @@
 
 <div class="flex min-h-screen">
 
-    {{-- ════════════════════════════════════════════════════════════
-         SIDEBAR
-         - Desktop: always visible, fixed width
-         - Mobile: off-canvas drawer sliding from left
-    ════════════════════════════════════════════════════════════ --}}
+    {{-- ── Sidebar ───────────────────────────────────────────────────────────
+         Desktop: always visible at w-56
+         Mobile: off-canvas drawer, slides in from left
+    ──────────────────────────────────────────────────────────────────────── --}}
     <aside class="fixed inset-y-0 left-0 z-40 w-64 bg-ink flex flex-col
-                  transform transition-transform duration-200 ease-in-out
+                  transition-transform duration-200 ease-in-out
                   md:relative md:translate-x-0 md:w-56 md:flex-shrink-0"
            :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'">
 
         {{-- Wordmark --}}
-        <div class="px-6 py-5 border-b border-white/10 flex items-center justify-between">
+        <div class="px-6 py-5 border-b border-white/10 flex items-center justify-between flex-shrink-0">
             <div>
                 <a href="{{ route('home') }}"
                    class="font-serif text-base text-parchment tracking-wide hover:text-amber-glow transition duration-150">
                     Veiled Lumin
                 </a>
-                <div class="text-[10px] text-lavender-grey/60 mt-0.5 font-sans uppercase tracking-widest">Admin</div>
+                <div class="text-[10px] mt-0.5 font-sans uppercase tracking-widest"
+                     style="color:rgba(154,159,179,0.5);">Admin</div>
             </div>
             {{-- Close button — mobile only --}}
             <button @click="sidebarOpen = false"
-                    class="md:hidden text-lavender-grey/60 hover:text-parchment transition p-1 rounded"
+                    class="md:hidden flex items-center justify-center w-7 h-7 rounded-md
+                           transition duration-150"
+                    style="color:rgba(154,159,179,0.6);"
                     aria-label="Close menu">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
@@ -63,18 +63,18 @@
         </div>
 
         {{-- Nav --}}
-        <nav class="flex-1 px-3 py-5 space-y-0.5 text-sm" aria-label="Admin navigation">
+        <nav class="flex-1 px-3 py-5 space-y-0.5 text-sm overflow-y-auto">
             @php
                 $navLink = fn(string $indexRoute, string $matchPrefix, string $icon, string $label) =>
-                    '<a href="' . route($indexRoute) . '" class="flex items-center gap-3 px-3 py-2.5 rounded-md transition duration-150 ' .
+                    '<a href="' . route($indexRoute) . '" @click="sidebarOpen = false" class="flex items-center gap-2.5 px-3 py-2.5 rounded-md transition duration-150 ' .
                     (request()->routeIs($matchPrefix . '*')
                         ? 'bg-amber-glow/15 text-amber-glow font-medium'
                         : 'text-lavender-grey hover:bg-white/6 hover:text-parchment') .
                     '">' . $icon . '<span>' . $label . '</span></a>';
 
-                $iconDash    = '<svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>';
-                $iconPoems   = '<svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>';
-                $iconGenres  = '<svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg>';
+                $iconDash   = '<svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>';
+                $iconPoems  = '<svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>';
+                $iconGenres = '<svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A2 2 0 013 12V7a4 4 0 014-4z"/></svg>';
             @endphp
 
             {!! $navLink('admin.dashboard',   'admin.dashboard', $iconDash,   'Dashboard') !!}
@@ -82,11 +82,10 @@
             {!! $navLink('admin.genres.index', 'admin.genres.',   $iconGenres, 'Genres') !!}
         </nav>
 
-        {{-- Footer links --}}
-        <div class="px-3 py-4 border-t border-white/10 space-y-0.5 text-sm">
+        {{-- Footer --}}
+        <div class="px-3 py-4 border-t border-white/10 space-y-0.5 text-sm flex-shrink-0">
             <a href="{{ route('home') }}"
-               class="flex items-center gap-2.5 px-3 py-2.5 rounded-md text-lavender-grey/70
-                      hover:text-parchment hover:bg-white/6 transition duration-150">
+               class="flex items-center gap-2.5 px-3 py-2.5 rounded-md transition duration-150 text-lavender-grey/70 hover:text-parchment hover:bg-white/6">
                 <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
                 </svg>
@@ -95,8 +94,7 @@
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
                 <button type="submit"
-                        class="w-full text-left flex items-center gap-2.5 px-3 py-2.5 rounded-md
-                               text-lavender-grey/70 hover:text-parchment hover:bg-white/6 transition duration-150">
+                        class="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-md transition duration-150 text-lavender-grey/70 hover:text-parchment hover:bg-white/6">
                     <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
                     </svg>
@@ -106,34 +104,30 @@
         </div>
     </aside>
 
-    {{-- ════════════════════════════════════════════════════════════
-         MAIN AREA
-    ════════════════════════════════════════════════════════════ --}}
-    <div class="flex-1 flex flex-col min-w-0 md:ml-0">
+    {{-- ── Main area ──────────────────────────────────────────────────────── --}}
+    <div class="flex-1 flex flex-col min-w-0">
 
         {{-- Top bar --}}
         <header class="sticky top-0 z-20 bg-white border-b border-stone-200
-                       px-4 sm:px-6 md:px-8 py-3 md:py-4
-                       flex items-center gap-3">
+                       px-4 sm:px-6 md:px-8 py-3 flex items-center gap-3">
 
             {{-- Hamburger — mobile only --}}
             <button @click="sidebarOpen = true"
                     class="md:hidden flex items-center justify-center w-9 h-9 rounded-lg
-                           border border-stone-200 text-stone-500 hover:text-stone-700
-                           hover:border-stone-300 active:scale-95 transition duration-150 flex-shrink-0"
-                    aria-label="Open navigation menu">
+                           border border-stone-200 text-stone-500
+                           hover:border-stone-300 hover:text-stone-700
+                           active:scale-95 transition duration-150 flex-shrink-0"
+                    aria-label="Open navigation">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
                 </svg>
             </button>
 
-            {{-- Page title --}}
             <h1 class="font-serif text-base sm:text-lg text-stone-800 flex-1 truncate">
                 @yield('page-title', 'Dashboard')
             </h1>
 
-            {{-- User name — hidden on very small screens --}}
-            <span class="hidden sm:block text-xs text-stone-400 font-sans flex-shrink-0">
+            <span class="hidden sm:block text-xs text-stone-400 flex-shrink-0">
                 {{ Auth::user()?->name }}
             </span>
         </header>

@@ -4,36 +4,29 @@
 <div>
     <label class="block text-sm font-medium text-stone-700 mb-1.5">Title</label>
     <input type="text" name="title" value="{{ old('title', $poem->title ?? '') }}"
-           autocomplete="off"
-           class="w-full border border-stone-300 rounded-md px-3 py-2.5 text-sm
+           class="w-full border border-stone-300 rounded-md px-3 py-2.5 text-sm bg-white
                   focus:border-amber-glow focus:ring-1 focus:ring-amber-glow/50 outline-none transition">
-    @error('title')
-        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-    @enderror
+    @error('title') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
 </div>
 
 {{-- Slug --}}
 <div>
     <label class="block text-sm font-medium text-stone-700 mb-1.5">
-        Slug
-        <span class="text-stone-400 font-normal text-xs">(auto-generated if blank)</span>
+        Slug <span class="text-stone-400 font-normal text-xs">(auto-generated if blank)</span>
     </label>
     <input type="text" name="slug" value="{{ old('slug', $poem->slug ?? '') }}"
-           autocomplete="off"
-           class="w-full border border-stone-300 rounded-md px-3 py-2.5 text-sm
+           class="w-full border border-stone-300 rounded-md px-3 py-2.5 text-sm bg-white
                   focus:border-amber-glow focus:ring-1 focus:ring-amber-glow/50 outline-none transition">
-    @error('slug')
-        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-    @enderror
+    @error('slug') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
 </div>
 
-{{-- Genre + Status — side by side on sm+, stacked on mobile --}}
+{{-- Genre + Status: 2 columns on sm+, stacked on mobile --}}
 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
     <div>
         <label class="block text-sm font-medium text-stone-700 mb-1.5">Genre</label>
         <select name="genre_id"
-                class="w-full border border-stone-300 rounded-md px-3 py-2.5 text-sm
-                       focus:border-amber-glow focus:ring-1 focus:ring-amber-glow/50 outline-none transition bg-white">
+                class="w-full border border-stone-300 rounded-md px-3 py-2.5 text-sm bg-white
+                       focus:border-amber-glow focus:ring-1 focus:ring-amber-glow/50 outline-none transition">
             <option value="">— None —</option>
             @foreach($genres as $genre)
                 <option value="{{ $genre->id }}"
@@ -42,27 +35,23 @@
                 </option>
             @endforeach
         </select>
-        @error('genre_id')
-            <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-        @enderror
+        @error('genre_id') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
     </div>
 
     <div>
         <label class="block text-sm font-medium text-stone-700 mb-1.5">Status</label>
         <select name="status"
-                class="w-full border border-stone-300 rounded-md px-3 py-2.5 text-sm
-                       focus:border-amber-glow focus:ring-1 focus:ring-amber-glow/50 outline-none transition bg-white">
+                class="w-full border border-stone-300 rounded-md px-3 py-2.5 text-sm bg-white
+                       focus:border-amber-glow focus:ring-1 focus:ring-amber-glow/50 outline-none transition">
             <option value="draft"     @selected(old('status', $poem->status ?? 'draft') === 'draft')>Draft</option>
             <option value="published" @selected(old('status', $poem->status ?? 'draft') === 'published')>Published</option>
         </select>
-        @error('status')
-            <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-        @enderror
+        @error('status') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
     </div>
 </div>
 
-{{-- Featured checkbox --}}
-<div class="flex items-center gap-3 py-0.5">
+{{-- Featured --}}
+<div class="flex items-center gap-3">
     <input type="hidden" name="featured" value="0">
     <input type="checkbox" name="featured" id="featured" value="1"
            @checked(old('featured', $poem->featured ?? false))
@@ -70,33 +59,27 @@
     <label for="featured" class="text-sm font-medium text-stone-700 cursor-pointer select-none leading-tight">
         Feature this poem on the homepage
     </label>
-    @error('featured')
-        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-    @enderror
+    @error('featured') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
 </div>
 
 {{-- Excerpt --}}
 <div>
     <label class="block text-sm font-medium text-stone-700 mb-1.5">
-        Excerpt
-        <span class="text-stone-400 font-normal text-xs">(shown in listings)</span>
+        Excerpt <span class="text-stone-400 font-normal text-xs">(shown in listings, optional)</span>
     </label>
     <textarea name="excerpt" rows="2"
-              class="w-full border border-stone-300 rounded-md px-3 py-2.5 text-sm
-                     focus:border-amber-glow focus:ring-1 focus:ring-amber-glow/50 outline-none transition resize-none">{{ old('excerpt', $poem->excerpt ?? '') }}</textarea>
-    @error('excerpt')
-        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-    @enderror
+              class="w-full border border-stone-300 rounded-md px-3 py-2.5 text-sm resize-none
+                     focus:border-amber-glow focus:ring-1 focus:ring-amber-glow/50 outline-none transition">{{ old('excerpt', $poem->excerpt ?? '') }}</textarea>
+    @error('excerpt') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
 </div>
 
 {{-- Cover image --}}
 <div>
     <label class="block text-sm font-medium text-stone-700 mb-1.5">
-        Cover Image
-        <span class="text-stone-400 font-normal text-xs">(JPG, PNG or WebP — max 3 MB)</span>
+        Cover Image <span class="text-stone-400 font-normal text-xs">(JPG, PNG or WebP — max 3 MB)</span>
     </label>
 
-    {{-- Current image preview (edit mode) --}}
+    {{-- Current image (edit mode) --}}
     @if(!empty($poem->cover_image))
         <div class="mb-3" x-data="{ remove: false }">
             <div x-show="!remove" class="relative inline-block">
@@ -105,45 +88,35 @@
                      class="h-28 w-auto max-w-full rounded-md object-cover border border-stone-200 shadow-sm">
                 <button type="button"
                         @click="remove = true; $refs.removeCover.value = '1'"
-                        class="absolute -top-2 -right-2 w-6 h-6 bg-red-500 hover:bg-red-600
-                               text-white rounded-full text-xs flex items-center justify-center
-                               shadow transition"
+                        class="absolute -top-2 -right-2 w-6 h-6 bg-red-500 hover:bg-red-600 text-white
+                               rounded-full text-xs flex items-center justify-center shadow transition"
                         title="Remove cover">&times;</button>
             </div>
             <p x-show="remove" class="text-sm text-red-500 font-medium">
                 Cover will be removed on save.
-                <button type="button"
-                        @click="remove = false; $refs.removeCover.value = ''"
+                <button type="button" @click="remove = false; $refs.removeCover.value = ''"
                         class="underline ml-1 text-stone-500">Undo</button>
             </p>
             <input type="hidden" name="remove_cover" value="" x-ref="removeCover">
         </div>
     @endif
 
-    {{-- File input --}}
-    <label class="flex flex-col items-center justify-center w-full px-4 py-5 rounded-md
-                  border-2 border-dashed border-stone-200 cursor-pointer
-                  hover:border-amber-glow/40 hover:bg-stone-50 transition duration-150"
-           id="cover-drop-label">
+    {{-- Tap/click zone --}}
+    <label class="flex flex-col items-center justify-center w-full px-4 py-5 rounded-md cursor-pointer
+                  border-2 border-dashed border-stone-200
+                  hover:border-amber-glow/50 hover:bg-stone-50 transition duration-150">
         <svg class="w-6 h-6 text-stone-400 mb-2" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"/>
         </svg>
-        <span class="text-xs text-stone-500 text-center" id="cover-filename">
-            Tap to choose an image
-        </span>
+        <span class="text-xs text-stone-500 text-center" id="cover-filename">Tap to choose an image</span>
         <input type="file" name="cover_image" accept="image/jpeg,image/png,image/webp"
-               class="sr-only"
-               onchange="previewCover(this)">
+               class="sr-only" onchange="previewCover(this)">
     </label>
 
-    {{-- New image preview (before save) --}}
-    <img id="cover-preview"
-         src="" alt="Preview"
+    <img id="cover-preview" src="" alt="Preview"
          class="mt-3 h-28 w-auto max-w-full rounded-md object-cover border border-stone-200 shadow-sm hidden">
 
-    @error('cover_image')
-        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-    @enderror
+    @error('cover_image') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
 </div>
 
 {{-- Poem body --}}
@@ -152,9 +125,7 @@
     <textarea name="body" rows="12"
               class="w-full border border-stone-300 rounded-md px-3 py-2.5 text-sm font-serif leading-relaxed
                      focus:border-amber-glow focus:ring-1 focus:ring-amber-glow/50 outline-none transition">{{ old('body', $poem->body ?? '') }}</textarea>
-    @error('body')
-        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-    @enderror
+    @error('body') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
 </div>
 
 @once
@@ -162,20 +133,16 @@
 <script>
 function previewCover(input) {
     const preview  = document.getElementById('cover-preview');
-    const filename = document.getElementById('cover-filename');
+    const label    = document.getElementById('cover-filename');
     if (input.files && input.files[0]) {
-        const file   = input.files[0];
+        const file = input.files[0];
         const reader = new FileReader();
-        reader.onload = e => {
-            preview.src = e.target.result;
-            preview.classList.remove('hidden');
-        };
+        reader.onload = e => { preview.src = e.target.result; preview.classList.remove('hidden'); };
         reader.readAsDataURL(file);
-        if (filename) filename.textContent = file.name;
+        if (label) label.textContent = file.name;
     } else {
-        preview.src = '';
-        preview.classList.add('hidden');
-        if (filename) filename.textContent = 'Tap to choose an image';
+        preview.src = ''; preview.classList.add('hidden');
+        if (label) label.textContent = 'Tap to choose an image';
     }
 }
 </script>
