@@ -10,7 +10,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;1,9..144,300;1,9..144,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
-    <x-vite-assets />
+    <link rel="stylesheet" href="/build/assets/app-CS3g80mm.css">
+    <script type="module" src="/build/assets/app-_swCgE72.js"></script>
 </head>
 <body class="font-sans bg-stone-100 text-stone-800 antialiased">
 <div class="flex min-h-screen">

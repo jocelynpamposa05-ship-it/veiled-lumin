@@ -1,4 +1,5 @@
 # ─── PHP application ────────────────────────────────────────────────────────
+# Build v2 — hardcoded asset links, no @vite directive
 FROM php:8.4-cli
 
 # System dependencies + PHP extensions
