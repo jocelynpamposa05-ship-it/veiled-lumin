@@ -11,12 +11,28 @@ class DashboardController extends Controller
     public function index()
     {
         $stats = [
-            'poems' => Poem::count(),
+            'poems'     => Poem::count(),
             'published' => Poem::where('status', 'published')->count(),
-            'drafts' => Poem::where('status', 'draft')->count(),
-            'genres' => Genre::count(),
+            'drafts'    => Poem::where('status', 'draft')->count(),
+            'genres'    => Genre::count(),
         ];
 
-        return view('admin.dashboard', compact('stats'));
+        $recentPoems = Poem::with('genre')
+            ->latest()
+            ->take(5)
+            ->get();
+
+        $draftPoems = Poem::with('genre')
+            ->where('status', 'draft')
+            ->latest()
+            ->take(5)
+            ->get();
+
+        $genres = Genre::withCount('poems')
+            ->orderBy('name')
+            ->take(8)
+            ->get();
+
+        return view('admin.dashboard', compact('stats', 'recentPoems', 'draftPoems', 'genres'));
     }
 }
