@@ -111,16 +111,33 @@
         <header class="sticky top-0 z-20 bg-white border-b border-stone-200
                        px-4 sm:px-6 md:px-8 py-3 flex items-center gap-3">
 
-            {{-- Hamburger — mobile only --}}
-            <button @click="sidebarOpen = true"
+            {{-- Hamburger / X toggle — mobile only --}}
+            <button @click="sidebarOpen = !sidebarOpen"
+                    :aria-label="sidebarOpen ? 'Close navigation' : 'Open navigation'"
+                    :aria-expanded="sidebarOpen"
                     class="md:hidden flex items-center justify-center w-9 h-9 rounded-lg
                            border border-stone-200 text-stone-500
                            hover:border-stone-300 hover:text-stone-700
-                           active:scale-95 transition duration-150 flex-shrink-0"
-                    aria-label="Open navigation">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                           active:scale-95 transition duration-150 flex-shrink-0">
+
+                {{-- Hamburger — shown when sidebar is closed --}}
+                <svg x-show="!sidebarOpen"
+                     x-transition:enter="transition ease-out duration-150"
+                     x-transition:enter-start="opacity-0 rotate-90"
+                     x-transition:enter-end="opacity-100 rotate-0"
+                     class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
                 </svg>
+
+                {{-- X — shown when sidebar is open --}}
+                <svg x-show="sidebarOpen"
+                     x-transition:enter="transition ease-out duration-150"
+                     x-transition:enter-start="opacity-0 -rotate-90"
+                     x-transition:enter-end="opacity-100 rotate-0"
+                     class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+
             </button>
 
             <h1 class="font-serif text-base sm:text-lg text-stone-800 flex-1 truncate">
