@@ -9,12 +9,9 @@ export default defineConfig({
         }),
     ],
     build: {
-        manifest: true,
+        // Force manifest to public/build/manifest.json (no .vite/ subdirectory)
+        // so Laravel's default Vite helper finds it without extra config
+        manifest: 'manifest.json',
         outDir: 'public/build',
-        rollupOptions: {
-            output: {
-                manualChunks: undefined,
-            },
-        },
     },
 });
