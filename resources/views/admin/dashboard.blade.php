@@ -108,7 +108,7 @@
             @else
                 <div class="divide-y divide-stone-50">
                     @foreach($recentPoems as $poem)
-                        <a href="{{ route('admin.poems.edit', $poem) }}"
+                        <a href="{{ route('admin.poems.show', $poem) }}"
                            class="flex items-center gap-3 px-5 py-3.5 hover:bg-stone-50 transition duration-150">
 
                             {{-- Initial avatar --}}
@@ -235,7 +235,7 @@
             @else
                 <div class="divide-y divide-stone-50">
                     @foreach($draftPoems as $poem)
-                        <a href="{{ route('admin.poems.edit', $poem) }}"
+                        <a href="{{ route('admin.poems.show', $poem) }}"
                            class="flex items-center gap-3 px-5 py-3 hover:bg-stone-50 transition duration-150">
                             <div class="w-7 h-7 rounded-md flex items-center justify-center flex-shrink-0 font-serif text-xs"
                                  style="background:rgba(245,158,11,0.1); color:rgba(245,158,11,0.8);">

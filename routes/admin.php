@@ -19,6 +19,6 @@ Route::middleware(['auth', 'verified'])
     ->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-        Route::resource('poems', PoemController::class)->except(['show']);
+        Route::resource('poems', PoemController::class);
         Route::resource('genres', GenreController::class)->except(['show']);
     });

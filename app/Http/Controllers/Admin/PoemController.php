@@ -13,11 +13,23 @@ class PoemController extends Controller
 {
     public function __construct(private CloudinaryService $cloudinary) {}
 
-    public function index()
+    public function index(Request $request)
     {
-        $poems = Poem::with('genre')->latest()->paginate(15);
+        $search = trim((string) $request->input('search'));
 
-        return view('admin.poems.index', compact('poems'));
+        $poems = Poem::with('genre')
+            ->when($search !== '', function ($query) use ($search) {
+                $query->where(function ($query) use ($search) {
+                    $query->where('title', 'like', "%{$search}%")
+                        ->orWhere('excerpt', 'like', "%{$search}%")
+                        ->orWhere('body', 'like', "%{$search}%");
+                });
+            })
+            ->latest()
+            ->paginate(15)
+            ->withQueryString();
+
+        return view('admin.poems.index', compact('poems', 'search'));
     }
 
     public function create()
@@ -25,6 +37,14 @@ class PoemController extends Controller
         $genres = Genre::orderBy('name')->get();
 
         return view('admin.poems.create', compact('genres'));
+    }
+
+    /** Display a distraction-free reading view for a poem or draft. */
+    public function show(Poem $poem)
+    {
+        $poem->load('genre');
+
+        return view('admin.poems.show', compact('poem'));
     }
 
     public function store(Request $request)
