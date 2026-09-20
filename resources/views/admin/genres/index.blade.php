@@ -30,23 +30,40 @@
                     </svg>
                     <span class="hidden sm:inline">Edit</span>
                 </a>
-                <form method="POST" action="{{ route('admin.genres.destroy', $genre) }}"
-                      onsubmit="return confirm('Delete this genre? Poems in it will become genre-less.')">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit"
-                            class="inline-flex items-center gap-1.5 px-2.5 py-1.5 text-xs rounded-md
-                                   border border-red-100 text-red-400
-                                   hover:border-red-200 hover:bg-red-50 hover:text-red-600 transition duration-150">
+                <button type="button"
+                        x-data=""
+                        x-on:click="$dispatch('open-modal', 'delete-genre-{{ $genre->id }}')"
+                        class="inline-flex items-center gap-1.5 px-2.5 py-1.5 text-xs rounded-md
+                               border border-red-100 text-red-400
+                               hover:border-red-200 hover:bg-red-50 hover:text-red-600 transition duration-150">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
                         </svg>
                         <span class="hidden sm:inline">Delete</span>
-                    </button>
-                </form>
+                </button>
             </div>
 
         </div>
+
+        <x-modal name="delete-genre-{{ $genre->id }}" maxWidth="md" focusable>
+            <form method="POST" action="{{ route('admin.genres.destroy', $genre) }}" class="p-6">
+                @csrf
+                @method('DELETE')
+                <h2 class="font-serif text-xl text-stone-800">Delete “{{ $genre->name }}”?</h2>
+                <p class="mt-2 text-sm text-stone-500 leading-relaxed">
+                    This permanently removes the genre. Its poems will remain, but will no longer have a genre assigned.
+                </p>
+                <div class="mt-6 flex justify-end gap-3">
+                    <button type="button" x-on:click="$dispatch('close-modal', 'delete-genre-{{ $genre->id }}')"
+                            class="px-4 py-2 text-sm rounded-md border border-stone-200 text-stone-600 hover:bg-stone-50 transition">
+                        Cancel
+                    </button>
+                    <button type="submit" class="px-4 py-2 text-sm rounded-md bg-red-600 text-white hover:bg-red-700 transition">
+                        Delete permanently
+                    </button>
+                </div>
+            </form>
+        </x-modal>
     @empty
         <div class="px-5 py-12 text-center text-stone-400 text-sm">
             <p class="font-serif italic mb-2">No genres yet.</p>

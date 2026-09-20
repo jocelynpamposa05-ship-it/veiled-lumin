@@ -11,6 +11,42 @@
 
     <link rel="stylesheet" href="/build/assets/app-C20ZLflv.css">
     <script type="module" src="/build/assets/app-_swCgE72.js"></script>
+    <style>
+        .admin-search {
+            display: flex;
+            align-items: center;
+            gap: .55rem;
+            width: min(340px, 34vw);
+            height: 36px;
+            padding: 0 4px 0 12px;
+            border: 1px solid #e7e2d8;
+            border-radius: 10px;
+            background: #faf9f6;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,.8);
+            transition: border-color .15s, box-shadow .15s, background .15s;
+        }
+        .admin-search:hover { background: #fff; border-color: #d6cbbb; }
+        .admin-search:focus-within {
+            background: #fff;
+            border-color: #c9913a;
+            box-shadow: 0 0 0 3px rgba(233,183,103,.16);
+        }
+        .admin-search input { min-width: 0; flex: 1; outline: 0; }
+        .admin-search-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            border-radius: 7px;
+            color: #fff;
+            background: #1c2033;
+            transition: background .15s, transform .15s;
+        }
+        .admin-search-button:hover { background: #303752; }
+        .admin-search-button:active { transform: scale(.95); }
+        @media (max-width: 767px) { .admin-search { width: min(230px, 52vw); } }
+    </style>
 </head>
 
 {{--
@@ -181,20 +217,30 @@
             </button>
 
             {{-- Breadcrumb --}}
-            <div class="flex items-center gap-1.5 text-sm flex-1 min-w-0">
+            <div class="hidden lg:flex items-center gap-1.5 text-sm w-44 flex-shrink-0 min-w-0">
                 <span class="text-stone-400">Admin</span>
                 <span class="text-stone-300">/</span>
                 <span class="text-stone-700 font-medium truncate">@yield('page-title', 'Dashboard')</span>
             </div>
 
             {{-- Search --}}
-            <div class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs flex-shrink-0"
-                 style="background:#f5f2ec; border:1px solid #e8e2d8; min-width:180px;">
-                <svg class="w-3.5 h-3.5 text-stone-400 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <form method="GET" action="{{ route('admin.poems.index') }}"
+                  class="admin-search hidden sm:flex flex-shrink-0" role="search">
+                <svg class="w-4 h-4 text-stone-400 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                 </svg>
-                <span class="text-stone-400">Search poems...</span>
-            </div>
+                <label for="admin-poem-search" class="sr-only">Search poems</label>
+                <input id="admin-poem-search" name="search" type="search" value="{{ request('search') }}"
+                       placeholder="Search your poems..." class="bg-transparent border-0 p-0 text-sm text-stone-700 placeholder:text-stone-400">
+                @if(request('search'))
+                    <a href="{{ route('admin.poems.index') }}" class="text-stone-400 hover:text-stone-600 text-lg leading-none" aria-label="Clear search">&times;</a>
+                @endif
+                <button type="submit" class="admin-search-button" aria-label="Search poems">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                    </svg>
+                </button>
+            </form>
 
             {{-- Avatar --}}
             <div class="flex items-center gap-2 flex-shrink-0">

@@ -50,6 +50,19 @@
                         @endif
                     </a>
                 @endforeach
+                @auth
+                    <a href="{{ route('admin.dashboard') }}"
+                       class="ml-2 inline-flex items-center rounded-full px-3 py-1.5 text-xs font-medium
+                              bg-amber-glow text-ink hover:bg-amber-glow/90 transition duration-150">
+                        Admin panel
+                    </a>
+                @else
+                    <a href="{{ route('login') }}"
+                       class="ml-2 inline-flex items-center rounded-full px-3 py-1.5 text-xs font-medium
+                              border border-amber-glow/50 text-amber-glow hover:bg-amber-glow hover:text-ink transition duration-150">
+                        Log in
+                    </a>
+                @endauth
             </nav>
 
             {{-- Mobile nav — self-contained Alpine dropdown --}}
@@ -115,6 +128,22 @@
                                 {{ $label }}
                             </a>
                         @endforeach
+                        <div class="my-1.5 border-t border-white/10"></div>
+                        @auth
+                            <a href="{{ route('admin.dashboard') }}"
+                               @click="open = false"
+                               class="flex items-center gap-3 px-4 py-3 text-sm text-amber-glow hover:bg-white/[0.05] transition duration-150">
+                                <span class="w-1 h-1 rounded-full bg-amber-glow flex-shrink-0"></span>
+                                Admin panel
+                            </a>
+                        @else
+                            <a href="{{ route('login') }}"
+                               @click="open = false"
+                               class="flex items-center gap-3 px-4 py-3 text-sm text-amber-glow hover:bg-white/[0.05] transition duration-150">
+                                <span class="w-1 h-1 rounded-full bg-amber-glow flex-shrink-0"></span>
+                                Log in
+                            </a>
+                        @endauth
                     </nav>
 
                     {{-- Decorative footer inside dropdown --}}
